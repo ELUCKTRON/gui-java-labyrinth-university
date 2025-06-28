@@ -1,5 +1,4 @@
-# .github/workflows/maven.yml
-name: Java Maven CI
+name: Java CI with Maven and MySQL
 
 on:
   push:
@@ -9,27 +8,43 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: saeed123
+          MYSQL_DATABASE: labyrinth
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    - name: Set up JDK 21
+    - name: Set up Java 21
       uses: actions/setup-java@v4
       with:
-        java-version: '21'
         distribution: 'temurin'
+        java-version: '21'
 
-    - name: Build with Maven
-      run: mvn -B clean install
+    - name: Wait for MySQL to be ready
+      run: |
+        for i in {1..30}; do
+          if mysqladmin ping -h 127.0.0.1 -u root -proot --silent; then
+            echo "MySQL is ready!";
+            break;
+          fi
+          echo "Waiting for MySQL..."
+          sleep 2
+        done
 
-    - name: Run tests
-      run: mvn test
-
-    - name: Upload test reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: target/surefire-reports
+    - name: Run Maven tests
+      run: |
+        mvn clean test
