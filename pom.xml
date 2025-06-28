@@ -20,6 +20,7 @@
         <resources>
             <resource>
                 <directory>images</directory>
+                <targetPath>images</targetPath>
             </resource>
         </resources>
         
