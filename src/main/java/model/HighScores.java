@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.io.File;
 
 public class HighScores {
 
@@ -19,7 +20,16 @@ public class HighScores {
 
     public HighScores(int maxScores) throws SQLException {
         this.maxScores = maxScores;
-        String dbURL = "jdbc:sqlite:labyrinth.db";
+        String dbFileName = "labyrinth.db";
+        String dbPath;
+        try {
+            String jarPath = new File(HighScores.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+                    .getParent();
+            dbPath = jarPath + File.separator + dbFileName;
+        } catch (Exception e) {
+            dbPath = dbFileName; // fallback to relative path
+        }
+        String dbURL = "jdbc:sqlite:" + dbPath;
         connection = DriverManager.getConnection(dbURL);
         ensureTableExists();
     }
