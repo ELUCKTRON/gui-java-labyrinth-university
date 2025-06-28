@@ -199,13 +199,7 @@ public class MainMenu extends JPanel {
 
     private Image loadImage(String path) {
         try {
-            var file = new File(path);
-            if (file.exists()) {
-                return ImageIO.read(file);
-            } else {
-                System.out.println("Image not found: " + path);
-                return null;
-            }
+            return ImageIO.read(getClass().getClassLoader().getResourceAsStream(path));
         } catch (IOException e) {
             System.out.println("Error loading image: " + e.getMessage());
             return null;

@@ -165,12 +165,16 @@ public class GameView extends JPanel {
 
     private void imageLoader() {
         try {
-            wallImage = ImageIO.read(new File("images/wall.jpeg"));
-            emptyNotVisibleImage = ImageIO.read(new File("images/notVisible.jpeg"));
-            emptyVisibleImage = ImageIO.read(new File("images/visible.jpeg"));
-            playerImage = ImageIO.read(new File("images/player.png"));
-            monsterImage = ImageIO.read(new File("images/warewolf.png"));
-        } catch (IOException e) {
+            wallImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/wall.jpeg"));
+            emptyNotVisibleImage = ImageIO
+                    .read(getClass().getClassLoader().getResourceAsStream("images/notVisible.jpeg"));
+            emptyVisibleImage = ImageIO
+                    .read(getClass().getClassLoader().getResourceAsStream("images/visible.jpeg"));
+            playerImage = ImageIO
+                    .read(getClass().getClassLoader().getResourceAsStream("images/player.png"));
+            monsterImage = ImageIO
+                    .read(getClass().getClassLoader().getResourceAsStream("images/warewolf.png"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

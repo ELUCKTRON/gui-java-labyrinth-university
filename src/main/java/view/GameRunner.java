@@ -51,16 +51,8 @@ public class GameRunner extends JFrame {
 
     private void setLogoImage() {
         try {
-            // Check if the resource exists
-            var file = new File("images/logo.png");
-            if (file.exists()) {
-                logoImage = ImageIO.read(file);
-                this.setIconImage(logoImage);
-            } else {
-                // Resource not found, setting backgroundImage to null and continuing
-                System.out.println("logo image not found: images/logo.png");
-                logoImage = null;
-            }
+            logoImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/logo.png"));
+            this.setIconImage(logoImage);
         } catch (IOException e) {
             // Catch any IOException that may occur during reading
             System.out.println("Error loading logo image: " + e.getMessage());
