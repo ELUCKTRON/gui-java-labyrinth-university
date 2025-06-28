@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class HighScores {
 
@@ -20,13 +19,8 @@ public class HighScores {
 
     public HighScores(int maxScores) throws SQLException {
         this.maxScores = maxScores;
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", "root");
-        connectionProps.put("password", "saeed123");
-        connectionProps.put("serverTimezone", "UTC");
-        String dbURL = "jdbc:mysql://localhost:3306/labyrinth";
-        connection = DriverManager.getConnection(dbURL, connectionProps);
-
+        String dbURL = "jdbc:sqlite:labyrinth.db";
+        connection = DriverManager.getConnection(dbURL);
         ensureTableExists();
     }
 
@@ -85,7 +79,7 @@ public class HighScores {
         String insertQuery = "INSERT INTO HIGHSCORES (TIMESTAMP, NAME, SCORE, DIFFICULTY) VALUES (?, ?, ?, ?)";
         try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
             Timestamp ts = new Timestamp(System.currentTimeMillis());
-            insertStatement.setTimestamp(1, ts);
+            insertStatement.setString(1, ts.toString());
             insertStatement.setString(2, name);
             insertStatement.setInt(3, score);
             insertStatement.setString(4, difficulty);
@@ -94,7 +88,7 @@ public class HighScores {
     }
 
     private void deleteHighestScore(int score, String difficulty) throws SQLException {
-        String deleteQuery = "DELETE FROM HIGHSCORES WHERE SCORE=? AND DIFFICULTY=? LIMIT 1";
+        String deleteQuery = "DELETE FROM HIGHSCORES WHERE SCORE=? AND DIFFICULTY=?";
         try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
             deleteStatement.setInt(1, score);
             deleteStatement.setString(2, difficulty);
@@ -105,10 +99,10 @@ public class HighScores {
     private void ensureTableExists() throws SQLException {
         String createTableQuery = """
                     CREATE TABLE IF NOT EXISTS HIGHSCORES (
-                        TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        NAME VARCHAR(100) NOT NULL,
-                        SCORE INT NOT NULL,
-                        DIFFICULTY VARCHAR(50) NOT NULL
+                        TIMESTAMP TEXT DEFAULT (datetime('now')),
+                        NAME TEXT NOT NULL,
+                        SCORE INTEGER NOT NULL,
+                        DIFFICULTY TEXT NOT NULL
                     )
                 """;
 

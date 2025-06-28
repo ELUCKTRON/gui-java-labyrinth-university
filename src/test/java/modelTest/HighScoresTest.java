@@ -42,11 +42,9 @@ public class HighScoresTest {
             ArrayList<HighScore> scores = highScores.getHighScores(testDifficulty);
 
             // Verify the high score is added
-            boolean found = scores.stream().anyMatch(score ->
-                    score.getName().equals(testName) &&
-                            score.getScore() == testScore &&
-                            score.getDifficulty().equals(testDifficulty)
-            );
+            boolean found = scores.stream().anyMatch(score -> score.getName().equals(testName) &&
+                    score.getScore() == testScore &&
+                    score.getDifficulty().equals(testDifficulty));
             assertTrue(found, "The test high score should be present in the database");
         } finally {
             resetDatabase(highScores);
@@ -180,7 +178,6 @@ public class HighScoresTest {
         }
     }
 
-
     private void resetDatabase(HighScores highScores) throws SQLException {
         try (var statement = highScores.getConnectionForTest().createStatement()) {
             // Drop the table if it exists
@@ -188,13 +185,13 @@ public class HighScoresTest {
 
             // Recreate the table
             statement.executeUpdate("""
-                CREATE TABLE HIGHSCORES (
-                    TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    NAME VARCHAR(100) NOT NULL,
-                    SCORE INT NOT NULL,
-                    DIFFICULTY VARCHAR(50) NOT NULL
-                )
-            """);
+                        CREATE TABLE HIGHSCORES (
+                            TIMESTAMP TEXT DEFAULT (datetime('now')),
+                            NAME TEXT NOT NULL,
+                            SCORE INTEGER NOT NULL,
+                            DIFFICULTY TEXT NOT NULL
+                        )
+                    """);
         }
     }
 }

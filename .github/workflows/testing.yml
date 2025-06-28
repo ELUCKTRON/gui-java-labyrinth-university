@@ -1,4 +1,4 @@
-name: Java CI with Maven and MySQL
+name: Java CI with Maven
 
 on:
   push:
@@ -10,20 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: saeed123
-          MYSQL_DATABASE: labyrinth
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -33,17 +19,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
-
-    - name: Wait for MySQL to be ready
-      run: |
-        for i in {1..30}; do
-          if mysqladmin ping -h 127.0.0.1 -u root -proot --silent; then
-            echo "MySQL is ready!";
-            break;
-          fi
-          echo "Waiting for MySQL..."
-          sleep 2
-        done
 
     - name: Run Maven tests
       run: |
