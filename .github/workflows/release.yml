@@ -25,11 +25,11 @@ jobs:
       - name: Rename JAR
         run: |
           mkdir -p release
-          cp target/Labyrinth-*.jar release/app.jar
+          cp target/Labyrinth-*.jar release/Labyrinth.jar
 
       - name: Release and upload JAR
         uses: softprops/action-gh-release@v1
         with:
-          files: release/app.jar
+          files: release/Labyrinth.jar
           tag_name: ${{ github.ref_name }}
           token: ${{ secrets.PERSONAL_TOKEN }}
